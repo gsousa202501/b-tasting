@@ -1,18 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TastingSession } from '@/types';
 import { mockSessions } from '@/lib/mock-data';
+import { loadingSimulation } from '@/lib/mock-delays';
 import { toast } from 'sonner';
 
 // Mock API functions - these would connect to real API endpoints
 const sessionApi = {
   getSessions: async (): Promise<TastingSession[]> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // Simulate realistic loading time for table data
+    await loadingSimulation.tableLoad();
     return [...mockSessions];
   },
 
   createSession: async (session: Omit<TastingSession, 'id' | 'createdAt' | 'updatedAt'>): Promise<TastingSession> => {
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    await loadingSimulation.sessionCreation();
     const newSession: TastingSession = {
       ...session,
       id: `session-${Date.now()}`,
@@ -24,7 +25,7 @@ const sessionApi = {
   },
 
   updateSession: async (id: string, updates: Partial<TastingSession>): Promise<TastingSession> => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await loadingSimulation.sessionCreation();
     const index = mockSessions.findIndex(s => s.id === id);
     if (index === -1) throw new Error('Sessão não encontrada');
     
@@ -37,14 +38,14 @@ const sessionApi = {
   },
 
   deleteSession: async (id: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await loadingSimulation.medium();
     const index = mockSessions.findIndex(s => s.id === id);
     if (index === -1) throw new Error('Sessão não encontrada');
     mockSessions.splice(index, 1);
   },
 
   completeSession: async (id: string): Promise<TastingSession> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await loadingSimulation.sessionEvaluation();
     const index = mockSessions.findIndex(s => s.id === id);
     if (index === -1) throw new Error('Sessão não encontrada');
     

@@ -97,14 +97,12 @@ export function SessionsTable() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center space-y-4">
-          <LottieLoader size="lg" />
-          <div className="space-y-2">
-            <p className="text-lg font-medium text-beer-dark">Carregando sessões...</p>
-            <p className="text-sm text-muted-foreground">Buscando dados das sessões de degustação</p>
-          </div>
-        </div>
+      <div className="min-h-[400px] flex items-center justify-center">
+        <LottieLoader 
+          size="lg" 
+          variant="tasting"
+          text="Carregando sessões de degustação..."
+        />
       </div>
     );
   }

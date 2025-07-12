@@ -227,18 +227,16 @@ export function SamplesDataTable({ className }: SamplesDataTableProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-beer-dark">
             <FlaskConical className="h-5 w-5" />
-            Carregando Resultados de Ensaios
+            Resultados de Ensaios
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center space-y-4">
-              <LottieLoader size="lg" />
-              <div className="space-y-2">
-                <p className="text-lg font-medium text-beer-dark">Carregando dados...</p>
-                <p className="text-sm text-muted-foreground">Processando resultados de ensaios</p>
-              </div>
-            </div>
+          <div className="min-h-[400px] flex items-center justify-center">
+            <LottieLoader 
+              size="lg" 
+              variant="lab"
+              text="Processando resultados de ensaios..."
+            />
           </div>
         </CardContent>
       </Card>

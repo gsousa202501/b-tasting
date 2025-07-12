@@ -187,6 +187,35 @@ export function OrderingConfigurationDialog({ children, configuration, onSave }:
 
   const generatePreview = () => {
     try {
+      // Add loading simulation for preview generation
+      const previewPromise = loadingSimulation.orderingCalculation().then(() => {
+        const enhancedSamples: EnhancedSample[] = mockSamples.map(sample => ({
+          ...sample,
+          quality: {
+            score: Math.floor(Math.random() * 100),
+            conformity: ['conforme', 'nao-conforme', 'pendente'][Math.floor(Math.random() * 3)] as any,
+          },
+          priority: ['baixa', 'media', 'alta'][Math.floor(Math.random() * 3)] as any,
+          testFrequency: Math.floor(Math.random() * 30) + 1,
+          riskLevel: ['baixo', 'medio', 'alto'][Math.floor(Math.random() * 3)] as any,
+        }));
+
+        const preview = SampleOrderingEngine.generatePreview(enhancedSamples.slice(0, 10), config.criteria);
+        setPreviewData(preview);
+        setShowPreview(true);
+      });
+
+      toast.promise(previewPromise, {
+        loading: 'Calculando ordenação...',
+        success: 'Preview gerado com sucesso!',
+        error: 'Erro ao gerar preview'
+      });
+    } catch (error) {
+      toast.error('Erro ao gerar preview', {
+        description: error instanceof Error ? error.message : 'Erro desconhecido'
+      });
+    }
+  };
       const enhancedSamples: EnhancedSample[] = mockSamples.map(sample => ({
         ...sample,
         quality: {

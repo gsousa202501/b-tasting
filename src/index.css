@@ -120,4 +120,37 @@
   .fab-menu-item {
     animation: fab-slide-up 0.3s ease-out;
   }
+  
+  /* Lottie-style loading animations */
+  @keyframes loading-pulse {
+    0%, 100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes loading-bounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40%, 43% {
+      transform: translateY(-8px);
+    }
+    70% {
+      transform: translateY(-4px);
+    }
+    90% {
+      transform: translateY(-2px);
+    }
+  }
+  
+  .loading-pulse {
+    animation: loading-pulse 2s ease-in-out infinite;
+  }
+  
+  .loading-bounce {
+    animation: loading-bounce 1.5s ease-in-out infinite;
+  }
 }

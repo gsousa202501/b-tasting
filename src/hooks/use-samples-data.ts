@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { SampleData, TransposedSampleData, TestColumn } from '@/types/samples-data';
 import { mockSamplesData, availableTests } from '@/lib/mock-samples-data';
-import { LottieLoader } from '@/components/ui/lottie-loader';
+import { loadingSimulation } from '@/lib/mock-delays';
 
 // Mock API function
 const fetchSamplesData = async (): Promise<SampleData[]> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Simulate realistic loading time for samples data
+  await loadingSimulation.tableLoad();
   return mockSamplesData;
 };
 

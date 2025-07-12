@@ -40,14 +40,12 @@ export function AdvancedTastingInterface({ sessionId }: AdvancedTastingInterface
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <LottieLoader size="lg" />
-          <div className="space-y-2">
-            <p className="text-lg font-medium text-beer-dark">Carregando Interface de Degustação...</p>
-            <p className="text-sm text-muted-foreground">Preparando dados e configurações avançadas</p>
-          </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-beer-light via-background to-beer-light/50">
+        <LottieLoader 
+          size="xl" 
+          variant="tasting"
+          text="Preparando interface de degustação avançada..."
+        />
       </div>
     );
   }

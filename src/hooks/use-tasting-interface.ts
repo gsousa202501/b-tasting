@@ -10,6 +10,7 @@ import {
   TastingSpecification
 } from '@/types/tasting-interface';
 import { toast } from 'sonner';
+import { loadingSimulation } from '@/lib/mock-delays';
 
 // Mock data and API functions
 const mockTastingSpecifications: TastingSpecification[] = [
@@ -189,22 +190,22 @@ const mockViewConfigurations: TastingViewConfiguration[] = [
 
 const tastingApi = {
   getTastingSamples: async (sessionId: string): Promise<TastingSessionSample[]> => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await loadingSimulation.tableLoad();
     return generateMockTastingSamples(sessionId);
   },
 
   getViewConfigurations: async (): Promise<TastingViewConfiguration[]> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await loadingSimulation.short();
     return mockViewConfigurations;
   },
 
   saveViewConfiguration: async (config: TastingViewConfiguration): Promise<TastingViewConfiguration> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await loadingSimulation.medium();
     return { ...config, updatedAt: new Date().toISOString() };
   },
 
   updateEvaluationResult: async (result: TastingEvaluationResult): Promise<TastingEvaluationResult> => {
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await loadingSimulation.sampleAnalysis();
     return { ...result, evaluatedAt: new Date().toISOString() };
   }
 };

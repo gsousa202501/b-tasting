@@ -2,10 +2,11 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { SampleMonitoring, MonitoringFilters, MonitoringView } from '@/types/monitoring';
 import { mockMonitoringData } from '@/lib/mock-monitoring-data';
+import { loadingSimulation } from '@/lib/mock-delays';
 
 const monitoringApi = {
   getMonitoringData: async (): Promise<SampleMonitoring[]> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await loadingSimulation.tableLoad();
     return mockMonitoringData;
   }
 };

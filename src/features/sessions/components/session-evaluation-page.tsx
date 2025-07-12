@@ -34,6 +34,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { TastingSession, Sample, SampleEvaluation, SampleSpecifications } from '@/types';
 import { mockSessions } from '@/lib/mock-data';
+import { loadingSimulation } from '@/lib/mock-delays';
 import { toast } from 'sonner';
 import { LottieLoader } from '@/components/ui/lottie-loader';
 
@@ -105,14 +106,35 @@ export function SessionEvaluationPage({ sessionId }: SessionEvaluationPageProps)
   };
 
   const handleSaveEvaluations = () => {
-    // Simular salvamento
-    toast.success('Avaliações salvas com sucesso!');
+    // Simulate saving with loading state
+    const savePromise = loadingSimulation.sampleAnalysis().then(() => {
+      toast.success('Avaliações salvas com sucesso!');
+    });
+    
+    toast.promise(savePromise, {
+      loading: 'Salvando avaliações...',
+      success: 'Avaliações salvas com sucesso!',
+      error: 'Erro ao salvar avaliações'
+    });
   };
 
-  const handleFinalizeSession = () => {
-    // Simular finalização da sessão
-    toast.success('Sessão finalizada com sucesso!');
-    navigate({ to: '/sessions' });
+  const handleFinalizeSession = async () => {
+    try {
+      // Show loading state during finalization
+      const finalizePromise = loadingSimulation.sessionEvaluation().then(() => {
+        navigate({ to: '/sessions' });
+      });
+      
+      toast.promise(finalizePromise, {
+        loading: 'Finalizando sessão e gerando relatório...',
+        success: 'Sessão finalizada com sucesso!',
+        error: 'Erro ao finalizar sessão'
+      });
+      
+      await finalizePromise;
+    } catch (error) {
+      console.error('Error finalizing session:', error);
+    }
   };
 
   const getComplianceStats = () => {
@@ -127,13 +149,11 @@ export function SessionEvaluationPage({ sessionId }: SessionEvaluationPageProps)
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-beer-light via-background to-beer-light/50">
-        <div className="text-center">
-          <LottieLoader size="lg" />
-          <div className="mt-4 space-y-2">
-            <p className="text-lg font-medium text-beer-dark">Carregando sessão...</p>
-            <p className="text-sm text-muted-foreground">Preparando interface de avaliação</p>
-          </div>
-        </div>
+        <LottieLoader 
+          size="xl" 
+          variant="lab"
+          text="Preparando interface de avaliação..."
+        />
       </div>
     );
   }

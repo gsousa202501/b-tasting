@@ -73,16 +73,12 @@ export function MonitoringDashboard() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <LottieLoader size="lg" />
-            <div className="space-y-2">
-              <p className="text-lg font-medium text-beer-dark">Carregando Monitoramento...</p>
-              <p className="text-sm text-muted-foreground">Processando dados de amostras e especificações</p>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <LottieLoader 
+          size="xl" 
+          variant="processing"
+          text="Processando dados de monitoramento..."
+        />
       </div>
     );
   }

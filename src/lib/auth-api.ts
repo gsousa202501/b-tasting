@@ -1,4 +1,5 @@
 import { LoginCredentials, AuthResponse, User } from '@/types/auth';
+import { loadingSimulation } from '@/lib/mock-delays';
 
 // Mock API - Replace with actual API endpoints
 const API_BASE_URL = '/api/auth';
@@ -36,8 +37,8 @@ const mockUsers: User[] = [
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Simulate authentication delay
+    await loadingSimulation.authentication();
 
     // Mock authentication logic
     const user = mockUsers.find(u => u.email === credentials.email);
@@ -72,7 +73,7 @@ export const authApi = {
   },
 
   refreshToken: async (refreshToken: string): Promise<AuthResponse> => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await loadingSimulation.medium();
 
     // Mock refresh logic
     const userId = refreshToken.split('-')[3];
@@ -94,12 +95,12 @@ export const authApi = {
   },
 
   logout: async (): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await loadingSimulation.short();
     // In a real app, you would invalidate the token on the server
   },
 
   getCurrentUser: async (token: string): Promise<User> => {
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await loadingSimulation.authentication();
 
     // Mock user validation with robust token format checking
     if (!token || typeof token !== 'string') {

@@ -151,9 +151,7 @@ export function LoginForm() {
             >
               {isLoading || isSubmitting ? (
                 <>
-                  <div className="mr-2">
-                    <LottieLoader size="sm" />
-                  </div>
+                  <LottieLoader size="sm" variant="processing" />
                   Entrando...
                 </>
               ) : (
