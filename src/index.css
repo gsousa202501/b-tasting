@@ -82,7 +82,7 @@
   
   /* Smooth transitions for layout changes */
   .layout-transition {
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
   }
   
   /* FAB animations */
@@ -103,5 +103,21 @@
   
   .fab-bounce {
     animation: fab-bounce 1s ease-in-out;
+  }
+  
+  /* FAB menu animations */
+  @keyframes fab-slide-up {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .fab-menu-item {
+    animation: fab-slide-up 0.3s ease-out;
   }
 }

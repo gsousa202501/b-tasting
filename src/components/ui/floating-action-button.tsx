@@ -1,162 +1,187 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Plus, Beer, FlaskConical, Users, Package, Zap } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
-import { CreateSessionDialog } from '@/features/sessions/components/create-session-dialog';
 import { cn } from '@/lib/utils';
+import { 
+  Plus, 
+  Beer, 
+  FlaskConical, 
+  Users, 
+  Package,
+  X,
+  Zap
+} from 'lucide-react';
+import { CreateSessionDialog } from '@/features/sessions/components/create-session-dialog';
+import { Link } from '@tanstack/react-router';
 
-interface FloatingActionButtonProps {
-  className?: string;
+interface FABAction {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  action: () => void;
+  href?: string;
+  color?: string;
 }
 
-export function FloatingActionButton({ className }: FloatingActionButtonProps) {
+export function FloatingActionButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
-  const quickActions = [
+  const actions: FABAction[] = [
     {
-      icon: Beer,
+      id: 'create-session',
       label: 'Nova Sessão',
-      description: 'Criar sessão de degustação',
-      action: 'session',
-      color: 'text-beer-medium',
+      icon: Beer,
+      action: () => {
+        setShowCreateDialog(true);
+        setIsOpen(false);
+      },
+      color: 'bg-beer-medium hover:bg-beer-dark'
     },
     {
+      id: 'quick-sample',
+      label: 'Buscar Amostras',
       icon: FlaskConical,
-      label: 'Nova Amostra',
-      description: 'Registrar nova amostra',
-      action: 'sample',
-      color: 'text-blue-600',
+      href: '/samples',
+      action: () => setIsOpen(false),
+      color: 'bg-blue-600 hover:bg-blue-700'
     },
     {
-      icon: Package,
-      label: 'Novo Produto',
-      description: 'Cadastrar produto',
-      action: 'product',
-      color: 'text-green-600',
-    },
-    {
+      id: 'add-taster',
+      label: 'Gerenciar Degustadores',
       icon: Users,
-      label: 'Novo Degustador',
-      description: 'Adicionar degustador',
-      action: 'taster',
-      color: 'text-purple-600',
+      href: '/tasters',
+      action: () => setIsOpen(false),
+      color: 'bg-green-600 hover:bg-green-700'
     },
     {
-      icon: Zap,
-      label: 'Nova Regra',
-      description: 'Criar regra de ordenação',
-      action: 'rule',
-      color: 'text-orange-600',
+      id: 'add-product',
+      label: 'Gerenciar Produtos',
+      icon: Package,
+      href: '/products',
+      action: () => setIsOpen(false),
+      color: 'bg-purple-600 hover:bg-purple-700'
     },
+    {
+      id: 'ordering',
+      label: 'Configurar Ordenação',
+      icon: Zap,
+      href: '/ordering',
+      action: () => setIsOpen(false),
+      color: 'bg-orange-600 hover:bg-orange-700'
+    }
   ];
 
-  const handleActionClick = (action: string) => {
-    setIsOpen(false);
-    // Handle different actions
-    switch (action) {
-      case 'session':
-        // This will be handled by the CreateSessionDialog
-        break;
-      case 'sample':
-        // Navigate to samples page or open modal
-        break;
-      case 'product':
-        // Navigate to products page or open modal
-        break;
-      case 'taster':
-        // Navigate to tasters page or open modal
-        break;
-      case 'rule':
-        // Navigate to ordering rules page or open modal
-        break;
-    }
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const renderActionButton = (action: FABAction, index: number) => {
+    const buttonContent = (
+      <Button
+        size="icon"
+        className={cn(
+          "h-12 w-12 rounded-full shadow-lg transition-all duration-300 transform",
+          action.color || "bg-gray-600 hover:bg-gray-700",
+          "hover:scale-110 hover:shadow-xl",
+          isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+        )}
+        style={{
+          transitionDelay: isOpen ? `${index * 50}ms` : '0ms'
+        }}
+        onClick={action.action}
+      >
+        <action.icon className="h-5 w-5 text-white" />
+      </Button>
+    );
+
+    const wrappedButton = (
+      <TooltipProvider key={action.id}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {action.href ? (
+              <Link to={action.href} onClick={action.action}>
+                {buttonContent}
+              </Link>
+            ) : (
+              buttonContent
+            )}
+          </TooltipTrigger>
+          <TooltipContent side="left" className="mr-2">
+            <p>{action.label}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+
+    return (
+      <div
+        key={action.id}
+        className={cn(
+          "transition-all duration-300",
+          isOpen ? "pointer-events-auto" : "pointer-events-none"
+        )}
+      >
+        {wrappedButton}
+      </div>
+    );
   };
 
   return (
-    <div className={cn("fixed bottom-6 right-6 z-50", className)}>
-      <TooltipProvider>
-        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-          <DropdownMenuTrigger asChild>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="lg"
-                  className={cn(
-                    "h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300",
-                    "bg-beer-medium hover:bg-beer-dark text-white",
-                    "border-2 border-white/20 backdrop-blur-sm",
-                    "transform hover:scale-105 active:scale-95",
-                    isOpen && "rotate-45"
-                  )}
-                  aria-label="Ações rápidas"
-                >
-                  <Plus className={cn("h-6 w-6 transition-transform duration-300", isOpen && "rotate-45")} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="left" className="mr-2">
-                <p>Ações Rápidas</p>
-              </TooltipContent>
-            </Tooltip>
-          </DropdownMenuTrigger>
-          
-          <DropdownMenuContent 
-            align="end" 
-            side="top" 
-            className="w-64 mb-2 border-beer-medium/20 bg-white/95 backdrop-blur-sm shadow-xl"
-          >
-            <div className="p-2">
-              <h3 className="text-sm font-semibold text-beer-dark mb-2">Ações Rápidas</h3>
-              {quickActions.map((action, index) => (
-                <div key={action.action}>
-                  {action.action === 'session' ? (
-                    <CreateSessionDialog>
-                      <DropdownMenuItem 
-                        className="flex items-center gap-3 p-3 cursor-pointer hover:bg-beer-light/30 rounded-lg transition-colors"
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <div className={cn("p-2 rounded-full bg-gray-100", action.color)}>
-                          <action.icon className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-sm text-beer-dark">{action.label}</p>
-                          <p className="text-xs text-muted-foreground">{action.description}</p>
-                        </div>
-                      </DropdownMenuItem>
-                    </CreateSessionDialog>
-                  ) : (
-                    <DropdownMenuItem 
-                      className="flex items-center gap-3 p-3 cursor-pointer hover:bg-beer-light/30 rounded-lg transition-colors"
-                      onClick={() => handleActionClick(action.action)}
-                    >
-                      <div className={cn("p-2 rounded-full bg-gray-100", action.color)}>
-                        <action.icon className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm text-beer-dark">{action.label}</p>
-                        <p className="text-xs text-muted-foreground">{action.description}</p>
-                      </div>
-                    </DropdownMenuItem>
-                  )}
-                  {index < quickActions.length - 1 && <DropdownMenuSeparator className="my-1" />}
-                </div>
-              ))}
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </TooltipProvider>
-    </div>
+    <>
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-3">
+        {/* Action Buttons */}
+        <div className="flex flex-col items-end space-y-3">
+          {actions.map((action, index) => renderActionButton(action, index))}
+        </div>
+
+        {/* Main FAB Button */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                onClick={toggleMenu}
+                className={cn(
+                  "h-14 w-14 rounded-full shadow-xl transition-all duration-300 transform",
+                  "bg-beer-medium hover:bg-beer-dark text-white",
+                  "hover:scale-110 hover:shadow-2xl",
+                  "focus:outline-none focus:ring-2 focus:ring-beer-medium focus:ring-offset-2",
+                  isOpen && "rotate-45"
+                )}
+                aria-label={isOpen ? "Fechar menu de ações" : "Abrir menu de ações"}
+              >
+                {isOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Plus className="h-6 w-6" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left" className="mr-2">
+              <p>{isOpen ? "Fechar menu" : "Ações rápidas"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+
+      {/* Backdrop for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/20 md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Create Session Dialog */}
+      {showCreateDialog && (
+        <CreateSessionDialog onClose={() => setShowCreateDialog(false)} />
+      )}
+    </>
   );
 }

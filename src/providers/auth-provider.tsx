@@ -34,6 +34,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const validatedUser = await authApi.getCurrentUser(token);
           setUser(validatedUser);
           console.log('Session restored successfully for user:', validatedUser.name);
+          
+          // Clear any redirect path since user is authenticated
+          sessionStorage.removeItem('b-tasting-redirect-after-login');
         } catch (error) {
           // Token is invalid, clear storage
           authStorage.clearAll();

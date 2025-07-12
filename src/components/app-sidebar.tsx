@@ -1,4 +1,4 @@
-import { Beer, Users, FlaskConical, BarChart3, Settings, Home, Zap, Package, Target, Monitor, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Beer, Users, FlaskConical, BarChart3, Settings, Home, Zap, Package, Target, Monitor } from 'lucide-react';
 import { Link, useLocation } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import {
@@ -120,25 +120,6 @@ export function AppSidebar() {
             )}
           </div>
           
-          {/* Collapse Toggle Button - Only on desktop */}
-          {!isMobile && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleCollapse}
-              className={cn(
-                "ml-auto h-8 w-8 text-beer-dark hover:bg-beer-light/50 transition-all duration-300",
-                isCollapsed && "ml-0"
-              )}
-              aria-label={isCollapsed ? "Expandir sidebar" : "Recolher sidebar"}
-            >
-              {isCollapsed ? (
-                <ChevronRight className="h-4 w-4" />
-              ) : (
-                <ChevronLeft className="h-4 w-4" />
-              )}
-            </Button>
-          )}
         </div>
 
         {/* Navigation */}
@@ -227,6 +208,28 @@ export function AppSidebar() {
               </TooltipProvider>
             )}
           </div>
+          
+          {/* Collapse Toggle Button - Only on desktop */}
+          {!isMobile && (
+            <div className="mt-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleCollapse}
+                className={cn(
+                  "w-full text-beer-dark hover:bg-beer-light/50 transition-all duration-300",
+                  isCollapsed && "px-2"
+                )}
+                aria-label={isCollapsed ? "Expandir sidebar" : "Recolher sidebar"}
+              >
+                {isCollapsed ? (
+                  <span className="text-xs">→</span>
+                ) : (
+                  <span className="text-xs">← Recolher</span>
+                )}
+              </Button>
+            </div>
+          )}
         </div>
       </aside>
     </>

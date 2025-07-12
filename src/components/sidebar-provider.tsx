@@ -13,13 +13,13 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpenState] = useState(() => {
-    // Always start closed on mobile, use localStorage for desktop persistence
+    // Always start closed on mobile, open on desktop by default
     if (typeof window !== 'undefined') {
       const isMobile = window.innerWidth < 768;
       if (isMobile) return false;
       
-      const saved = localStorage.getItem('b-tasting-sidebar-state');
-      return saved ? JSON.parse(saved) : true;
+      // On desktop, always start open
+      return true;
     }
     return false;
   });
@@ -34,10 +34,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
   const setIsOpen = (open: boolean) => {
     setIsOpenState(open);
-    // Only persist state on desktop
-    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-      localStorage.setItem('b-tasting-sidebar-state', JSON.stringify(open));
-    }
+    // Don't persist open/close state, only collapsed state
   };
 
   const setIsCollapsed = (collapsed: boolean) => {
@@ -47,14 +44,27 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const toggle = () => setIsOpen(!isOpen);
+  const toggle = () => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    if (isMobile) {
+      setIsOpen(!isOpen);
+    } else {
+      // On desktop, toggle collapse instead of open/close
+      setIsCollapsed(!isCollapsed);
+    }
+  };
+  
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   // Handle window resize - close sidebar on mobile
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768 && isOpen) {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile && isOpen) {
         setIsOpenState(false);
+      } else if (!isMobile) {
+        // On desktop, always keep sidebar open
+        setIsOpenState(true);
       }
     };
 
